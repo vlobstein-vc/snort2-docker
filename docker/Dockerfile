@@ -4,8 +4,10 @@ ENV VERSION 2.9.19
 RUN mkdir -p /root/pcaps/
 COPY labs /root/
 COPY tools /root/
+COPY snort-2.9.19.tar.gz /tmp/
 WORKDIR /root/src/
 
+RUN sed -i 's%deb.debian.org%archive.debian.org%g' /etc/apt/sources.list
 RUN  apt-get update && \
   apt-get -y install \
   build-essential \
@@ -33,8 +35,7 @@ RUN  apt-get update && \
   libssl-dev \
   tcpreplay && \
   apt-get clean && \
-  curl -L -O https://snort.org/downloads/snort/snort-$VERSION.tar.gz && \
-  tar xf ./snort-$VERSION.tar.gz && \
+  tar xf /tmp/snort-$VERSION.tar.gz && \
   cd ./snort-$VERSION && \
   ./configure --enable-sourcefire --enable-open-appid && \
   make -j$(nproc) && \
